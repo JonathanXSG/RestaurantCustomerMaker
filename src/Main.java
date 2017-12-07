@@ -29,28 +29,29 @@ public class Main {
 			try {
 				menuSelector();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	private static void makeCSVFile() throws IOException{
 		String fileName = "inputX"+fileNames.size()+".csv";
 		fileNames.add(fileName);
 		writter = new BufferedWriter(new FileWriter(fileName));
-		StringBuilder sb = new StringBuilder();
-		int tempTurn = randomArrivalTurn(prevTurn);
-		sb.append(tempTurn + ",");
-		prevTurn = tempTurn;
-		sb.append(lastUID++ + ",");
-		sb.append((rand.nextInt(12)+2) + ",");
-		sb.append("$"+rand.nextInt(15)+"."+rand.nextInt(100)+",");
-		sb.append((rand.nextInt(20)+5)+","); 
-		sb.append("/n");
-		writter.write(sb.toString());
-		writter.flush();
+		prevTurn=1;
+		for(int i=0 ; i<rand.nextInt(numOfCustomers);i++) {
+			StringBuilder sb = new StringBuilder();
+			int tempTurn = randomArrivalTurn(prevTurn);
+			sb.append(tempTurn + ",");
+			prevTurn = tempTurn;
+			sb.append(lastUID++ + ",");
+			sb.append((rand.nextInt(15)+2) + ",");
+			sb.append("$"+rand.nextInt(15)+"."+rand.nextInt(100)+",");
+			sb.append((rand.nextInt(60)+10)+","); 
+			sb.append("\n");
+			writter.write(sb.toString());
+			writter.flush();
+		}
 	}
 	
 	private static void makeMultipleCSV() throws IOException{
@@ -66,13 +67,25 @@ public class Main {
 		case 0:
 			return turn;
 		case 1:
-			return turn+1;
-		case 2:
 			return turn+rand.nextInt(10);
+		case 2:
+			return turn+rand.nextInt(50);
 		default:
 			return turn;
 		}
 	}
+	
+	public static void makeTXT() throws IOException {
+		writter = new BufferedWriter(new FileWriter("inputX.txt"));
+		for(String s : fileNames) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(s + "\n");
+			writter.write(sb.toString());
+			writter.newLine();
+			writter.flush();
+		}
+	}
+	
 	/**
 	 * Displays the Menu for the user
 	 */
@@ -90,6 +103,8 @@ public class Main {
 	 */
 	private static void menuSelector() throws IOException{
 		int answer= getNumberAnswer();
+		System.out.println("What would be the max number of customers?");
+		numOfCustomers = getNumberAnswer();
 		switch (answer) {
 		case 1:
 			makeCSVFile();
@@ -98,13 +113,7 @@ public class Main {
 			makeMultipleCSV();
 			break;
 		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		case 6:
-			
+			makeTXT();
 			break;
 		default:
 			System.out.println("That's not actually an option.");
